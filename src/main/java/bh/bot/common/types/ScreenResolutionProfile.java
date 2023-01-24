@@ -12,6 +12,10 @@ public abstract class ScreenResolutionProfile {
 
 	public abstract int getSupportedGameResolutionHeight();
 
+	public abstract Offset getOffsetLabelCharacterConfirm();
+	
+	public abstract Offset getOffsetLabelCharacterSelect();
+
 	public abstract Offset getOffsetButtonDungeonReRun();
 
 	public abstract Offset getOffsetButtonDungeonStar();
@@ -267,6 +271,16 @@ public abstract class ScreenResolutionProfile {
 		@Override
 		public int getSupportedGameResolutionHeight() {
 			return 520;
+		}
+
+		@Override
+		public Offset getOffsetLabelCharacterConfirm() {
+			return new Offset(400, 450);
+		}
+
+		@Override
+		public Offset getOffsetLabelCharacterSelect() {
+			return new Offset(100, 420);
 		}
 
 		@Override
