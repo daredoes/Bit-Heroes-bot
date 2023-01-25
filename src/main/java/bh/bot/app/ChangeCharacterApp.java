@@ -1,6 +1,7 @@
 package bh.bot.app;
 
 import static bh.bot.common.Log.info;
+import static bh.bot.common.Log.debug;
 import static bh.bot.common.utils.InteractionUtil.Mouse.moveCursor;
 import static bh.bot.common.utils.ThreadUtil.sleep;
 
@@ -11,6 +12,7 @@ import bh.bot.Main;
 import bh.bot.common.Configuration;
 import bh.bot.common.Telegram;
 import bh.bot.common.exceptions.NotSupportedException;
+import bh.bot.common.types.Offset;
 import bh.bot.common.types.annotations.AppMeta;
 import bh.bot.common.types.annotations.RequireSingleInstance;
 import bh.bot.common.types.images.BwMatrixMeta;
@@ -58,7 +60,7 @@ public class ChangeCharacterApp extends AbstractApplication {
         try {
             final int mainLoopInterval = Configuration.Interval.Loop.getMainLoopInterval(getDefaultMainLoopInterval());
 
-            moveCursor(new Point(100, 500));
+            moveCursor(new Offset(100, 500).toScreenCoordinate());
             boolean characterLoaded = false;
             boolean loadedSelect = false;
             boolean characterSelected = false;
@@ -66,12 +68,14 @@ public class ChangeCharacterApp extends AbstractApplication {
             while (!characterLoaded && !masterSwitch.get()) {
                 sleep(mainLoopInterval);
                 if (clickImage(BwMatrixMeta.Metas.Character.Labels.characterSelect)) {
-                    info("Loading Character Selection");
+                    debug("Loading Character Selection");
                 }
                 if (characterSelected) {
                     loopCount += 1;
-                    if (loopCount > 20) {
-                        info("We probably loaded the character, or already on it, so breaking out of the loop!");
+                    if (loopCount > 10) {
+                        debug("We probably loaded the character, or already on it, so breaking out of the loop!");
+                        InteractionUtil.Keyboard.sendEscape();
+                        InteractionUtil.Keyboard.sendEscape();
                         break;
                     }
                 }
@@ -79,31 +83,31 @@ public class ChangeCharacterApp extends AbstractApplication {
                     if (characterSelected) {
                         sleep(mainLoopInterval);
                         if (clickImage(BwMatrixMeta.Metas.Character.Dialogs.loading)) {
-                            info("Character Loading!");
+                            debug("Character Loading!");
                             characterLoaded = true;
                             break;
                         }
                     } else {
-                        info("Selecting Character in Slot #" + characterSlot);
+                        debug("Selecting Character in Slot #" + characterSlot);
                         if (characterSlot == 1) {
-                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(250, 200));
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Offset(250, 200).toScreenCoordinate());
                         } else if (characterSlot == 2) {
-                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(375, 200));
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Offset(375, 200).toScreenCoordinate());
                         } else if (characterSlot == 3) {
-                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(500, 200));
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Offset(500, 200).toScreenCoordinate());
                         } else {
                             throw new NotSupportedException("Cannot select character in this slot.");
                         }
                         sleep(mainLoopInterval);
                         if (clickImage(BwMatrixMeta.Metas.Character.Labels.confirm)) {
-                            info("Character Selected");
+                            info(ColorizeUtil.formatInfo, "\n\nCharacter Changed to Slot #" + characterSlot);
                             characterSelected = true;
                         }
                     }
                 } else {
                     if (clickImage(BwMatrixMeta.Metas.Character.Labels.heroes)) {
                         loadedSelect = true;
-                        info("Character Select Menu Loaded");
+                        debug("Character Select Menu Loaded");
                         sleep(mainLoopInterval);
                     }
                 }
