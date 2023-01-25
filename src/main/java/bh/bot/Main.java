@@ -24,6 +24,7 @@ import org.fusesource.jansi.AnsiConsole;
 
 import bh.bot.app.AbstractApplication;
 import bh.bot.app.AfkApp;
+import bh.bot.app.ChangeCharacterApp;
 import bh.bot.app.FishingApp;
 import bh.bot.app.GenMiniClient;
 import bh.bot.app.ReRunApp;
@@ -69,6 +70,7 @@ public class Main {
 // User functions
 					ReRunApp.class, //
 					FishingApp.class, //
+					ChangeCharacterApp.class, //
 					AfkApp.class, //
 					WorldBossApp.class, //
 					WorldBossTeamApp.class, //

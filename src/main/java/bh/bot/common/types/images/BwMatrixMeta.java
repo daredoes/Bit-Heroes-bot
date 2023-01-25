@@ -243,6 +243,11 @@ public class BwMatrixMeta {
                 public static class Labels {
                     public static BwMatrixMeta characterSelect;
                     public static BwMatrixMeta confirm;
+                    public static BwMatrixMeta heroes;
+                }
+
+                public static class Dialogs {
+                    public static BwMatrixMeta loading;
                 }
             }
 
@@ -474,6 +479,11 @@ public class BwMatrixMeta {
                 Configuration.screenResolutionProfile.getOffsetDialogNews(), //
                 0xFFFFFF
         );
+        Metas.Character.Dialogs.loading = BwMatrixMeta.from(//
+                "dialogs/character.loading2?",
+                Configuration.screenResolutionProfile.getOffsetDialogCharacterLoading(), //
+                0xFFFFFF
+        );
         Metas.Character.Labels.confirm = BwMatrixMeta.from(//
                 "buttons/character.confirm2?",
                 Configuration.screenResolutionProfile.getOffsetLabelCharacterConfirm(), //
@@ -482,6 +492,11 @@ public class BwMatrixMeta {
         Metas.Character.Labels.characterSelect = BwMatrixMeta.from(//
                 "buttons/character.select2?",
                 Configuration.screenResolutionProfile.getOffsetLabelCharacterSelect(), //
+                0xFFFFFF
+        );
+        Metas.Character.Labels.heroes = BwMatrixMeta.from(//
+                "labels/character.heroes2?",
+                Configuration.screenResolutionProfile.getOffsetLabelCharacterHeroes(), //
                 0xFFFFFF
         );
         Metas.Dungeons.Buttons.rerun = BwMatrixMeta.from(//

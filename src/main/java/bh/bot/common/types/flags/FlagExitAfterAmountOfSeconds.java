@@ -44,6 +44,7 @@ public class FlagExitAfterAmountOfSeconds extends FlagPattern<Integer> {
     public boolean internalCheckIsSupportedByApp(AbstractApplication instance) {
         return instance instanceof ReRunApp
                 || instance instanceof FishingApp
+                || instance instanceof ChangeCharacterApp
                 || instance instanceof AbstractDoFarmingApp
                 || instance instanceof AfkApp;
     }

@@ -1,5 +1,12 @@
 package bh.bot.app;
 
+import static bh.bot.common.Log.info;
+import static bh.bot.common.utils.InteractionUtil.Mouse.moveCursor;
+import static bh.bot.common.utils.ThreadUtil.sleep;
+
+import java.awt.Point;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import bh.bot.Main;
 import bh.bot.common.Configuration;
 import bh.bot.common.Telegram;
@@ -10,13 +17,6 @@ import bh.bot.common.types.images.BwMatrixMeta;
 import bh.bot.common.utils.ColorizeUtil;
 import bh.bot.common.utils.InteractionUtil;
 import bh.bot.common.utils.ThreadUtil;
-
-import java.awt.*;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static bh.bot.common.Log.*;
-import static bh.bot.common.utils.InteractionUtil.Mouse.moveCursor;
-import static bh.bot.common.utils.ThreadUtil.sleep;
 
 @AppMeta(code = "character", name = "Change Character", displayOrder = 1, argType = "number", argAsk = "What character slot do you want to pick?", argDefault = "1", argRequired = true)
 @RequireSingleInstance
@@ -37,19 +37,18 @@ public class ChangeCharacterApp extends AbstractApplication {
         AtomicBoolean masterSwitch = new AtomicBoolean(false);
         ThreadUtil.waitDone(
                 () -> doLoopClickImage(characterSlot, masterSwitch),
-				() -> internalDoSmallTasks( //
-						masterSwitch, //
-						SmallTasks //
-								.builder() //
-								.clickTalk() //
-								.clickDisconnect() //
-								.reactiveAuto() //
-								.autoExit() //
-								.detectChatboxDirectMessage() //
-								.build() //
-				), //
-                () -> doCheckGameScreenOffset(masterSwitch)
-        );
+                () -> internalDoSmallTasks( //
+                        masterSwitch, //
+                        SmallTasks //
+                                .builder() //
+                                .clickTalk() //
+                                .clickDisconnect() //
+                                .reactiveAuto() //
+                                .autoExit() //
+                                .detectChatboxDirectMessage() //
+                                .build() //
+                ), //
+                () -> doCheckGameScreenOffset(masterSwitch));
         Telegram.sendMessage("Stopped", false);
     }
 
@@ -61,26 +60,52 @@ public class ChangeCharacterApp extends AbstractApplication {
 
             moveCursor(new Point(100, 500));
             boolean characterLoaded = false;
+            boolean loadedSelect = false;
+            boolean characterSelected = false;
+            int loopCount = 0;
             while (!characterLoaded && !masterSwitch.get()) {
                 sleep(mainLoopInterval);
                 if (clickImage(BwMatrixMeta.Metas.Character.Labels.characterSelect)) {
-                    info("Character Select Menu Loaded");
-                    if (characterSlot == 0) {
-                        InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(250, 200));
-                    } else if (characterSlot == 1) {
-                        InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(375, 200));
-                    } else if (characterSlot == 2) {
-                        InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(500, 200));
-                    } else {
-                        throw new NotSupportedException("Cannot select character in this slot.");
+                    info("Loading Character Selection");
+                }
+                if (characterSelected) {
+                    loopCount += 1;
+                    if (loopCount > 20) {
+                        info("We probably loaded the character, or already on it, so breaking out of the loop!");
+                        break;
                     }
-                    sleep(2_000);
-                    if (clickImage(BwMatrixMeta.Metas.Character.Labels.confirm)) {
-                        sleep(20_000);
-                        characterLoaded = true;
+                }
+                if (loadedSelect) {
+                    if (characterSelected) {
+                        sleep(mainLoopInterval);
+                        if (clickImage(BwMatrixMeta.Metas.Character.Dialogs.loading)) {
+                            info("Character Loading!");
+                            characterLoaded = true;
+                            break;
+                        }
+                    } else {
+                        info("Selecting Character in Slot #" + characterSlot);
+                        if (characterSlot == 1) {
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(250, 200));
+                        } else if (characterSlot == 2) {
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(375, 200));
+                        } else if (characterSlot == 3) {
+                            InteractionUtil.Mouse.mouseMoveAndClickAndHide(new Point(500, 200));
+                        } else {
+                            throw new NotSupportedException("Cannot select character in this slot.");
+                        }
+                        sleep(mainLoopInterval);
+                        if (clickImage(BwMatrixMeta.Metas.Character.Labels.confirm)) {
+                            info("Character Selected");
+                            characterSelected = true;
+                        }
                     }
                 } else {
-                    throw new NotSupportedException("Couldn't select character in the desired slot.");
+                    if (clickImage(BwMatrixMeta.Metas.Character.Labels.heroes)) {
+                        loadedSelect = true;
+                        info("Character Select Menu Loaded");
+                        sleep(mainLoopInterval);
+                    }
                 }
             }
             masterSwitch.set(true);
