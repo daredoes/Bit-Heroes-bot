@@ -3,6 +3,13 @@
 :: Consider adding `--profile=YourProfileName` so you no longer needed to select profile manually
 :: You can remove flag `--ear` to keep game online all day (but still gone if you got Disconnected)
 :: With steam version of BH, refer to AFK.steam.bat file
-echo 'e' | call AFK.web.bat
-echo 'e' | call AFK.web.bat
+
+echo 'e' | call web.bot.bat character 1
+echo 'e' | call web.bot.bat afk a --ear --profile=dare
+echo 'e' | call web.bot.bat character 2
+echo 'e' | call web.bot.bat afk a --ear --profile=devito
+echo 'e' | call web.bot.bat character 3
+echo 'e' | call web.bot.bat afk a --ear --profile=elon
+timeout 3
+call auto.bat
 :: Move this file to bot's folder in order to use (this file was distributed within `sample-script` folder so it unable to run)
