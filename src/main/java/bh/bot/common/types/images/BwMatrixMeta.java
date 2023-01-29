@@ -221,6 +221,7 @@ public class BwMatrixMeta {
                 public static BwMatrixMeta confirmStartNotFullTeam;
                 public static BwMatrixMeta areYouStillThere;
                 public static BwMatrixMeta areYouSureWantToExit;
+                public static BwMatrixMeta leaveThisDungeon;
                 public static BwMatrixMeta news;
             }
         }
@@ -479,6 +480,11 @@ public class BwMatrixMeta {
                 Configuration.screenResolutionProfile.getOffsetDialogAreYouSureWantToExit(), //
                 0xFFFFFF
         );
+        Metas.Globally.Dialogs.leaveThisDungeon = BwMatrixMeta.from(//
+                "dialogs/globally.leave-this-dungeon2?",
+                Configuration.screenResolutionProfile.getOffsetDialogLeaveThisDungeon(), //
+                0xFFFFFF
+        );
         Metas.Globally.Dialogs.news = BwMatrixMeta.from(//
                 "dialogs/globally.news2?",
                 Configuration.screenResolutionProfile.getOffsetDialogNews(), //
@@ -492,7 +498,7 @@ public class BwMatrixMeta {
         Metas.Dungeons.Buttons.star = BwMatrixMeta.from(//
                 "buttons/dungeons.star2?",
                 Configuration.screenResolutionProfile.getOffsetButtonDungeonStar(), //
-                0xFFFFFF
+                0x000000
         );
         Metas.Dungeons.Buttons.emptyStar = BwMatrixMeta.from(//
                 "buttons/dungeons.bStar2?",
@@ -502,7 +508,7 @@ public class BwMatrixMeta {
         Metas.Dungeons.Buttons.bossLevel = BwMatrixMeta.from(//
                 "buttons/dungeons.boss2?",
                 new Offset(0, 0), //
-                0x000000
+                0x6066AD
         );
         Metas.Dungeons.Buttons.questLevel = BwMatrixMeta.from(//
                 "buttons/dungeons.level2?",

@@ -710,6 +710,7 @@ public abstract class AbstractApplication {
 	private static final int smallTalkSleepSecs = 60;
 	private static final int smallTalkSleepSecsWhenClicked = 3;
 	private static final int detectDcSleepSecs = 60;
+	private static final int leaveDungeonSleepSecs = 10;
 	private static final int reactiveAutoSleepSecs = 5;
 	private static final int closeEnterGameDialogNewsSleepSecs = 60;
 	private static final int persuadeSleepSecs = 60;
@@ -722,6 +723,7 @@ public abstract class AbstractApplication {
 		try {
 			long nextSmallTalkEpoch = addSec(smallTalkSleepSecs);
 			long nextDetectDcEpoch = addSec(detectDcSleepSecs);
+			long nextLeaveDungeonEpoch = addSec(leaveDungeonSleepSecs);
 			long nextReactiveAuto = addSec(reactiveAutoSleepSecs);
 			final AtomicInteger continousRed = new AtomicInteger(0);
 			long nextCloseEnterGameDialogNews = addSec(closeEnterGameDialogNewsSleepSecs);
@@ -802,6 +804,9 @@ public abstract class AbstractApplication {
 				if (st.clickTalk && nextSmallTalkEpoch <= System.currentTimeMillis())
 					nextSmallTalkEpoch = doClickTalk();
 
+				if (st.preventLeaveDungeon && nextLeaveDungeonEpoch <= System.currentTimeMillis())
+					nextLeaveDungeonEpoch = detectLeaveDungeon();
+
 				if (st.clickDisconnect && nextDetectDcEpoch <= System.currentTimeMillis())
 					nextDetectDcEpoch = detectDisconnected(masterSwitch);
 
@@ -840,6 +845,7 @@ public abstract class AbstractApplication {
 	protected static class SmallTasks {
 		public final boolean clickTalk;
 		public final boolean clickDisconnect;
+		public final boolean preventLeaveDungeon;
 		public final boolean reactiveAuto;
 		public final boolean autoExit;
 		public final boolean closeEnterGameNewsDialog;
@@ -856,6 +862,7 @@ public abstract class AbstractApplication {
 			this.persuade = b.f(5);
 			this.showWarningWorldBossTeam = b.f(6);
 			this.detectChatboxDirectMessage = b.f(7);
+			this.preventLeaveDungeon = b.f(8);
 		}
 
 		public static Builder builder() {
@@ -908,6 +915,10 @@ public abstract class AbstractApplication {
 
 			public Builder detectChatboxDirectMessage() {
 				return this.set(7);
+			}
+
+			public Builder preventLeaveDungeon() {
+				return this.set(8);
 			}
 		}
 	}
@@ -1086,6 +1097,14 @@ public abstract class AbstractApplication {
 			}
 		}
 		return addSec(detectDcSleepSecs);
+	}
+
+	private long detectLeaveDungeon() {
+		if (clickImage(BwMatrixMeta.Metas.Globally.Dialogs.leaveThisDungeon)) {
+			debug("Prevented leaving dungeon");
+			sendEscape();
+		}
+		return addSec(leaveDungeonSleepSecs);
 	}
 
 	private static final String saveChatboxDirectMessageImageTo = "out\\chatbox";
